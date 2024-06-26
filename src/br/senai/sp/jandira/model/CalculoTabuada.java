@@ -1,5 +1,7 @@
 package br.senai.sp.jandira.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class CalculoTabuada {
@@ -37,20 +39,16 @@ public class CalculoTabuada {
     public int getResultado() {
         return resultado;
     }
-    public int calcular(int multiplicando,int multiplicadorMin,int multiplicadorMax){
-        int resultado = 0;
-        for (int i =multiplicadorMin;i <= multiplicadorMax;i++){
-            resultado = multiplicando * i;
+    public List<Integer> calcular(int multiplicando, int multiplicadorMin, int multiplicadorMax) {
+        List<Integer> resultados = new ArrayList<>();
+
+
+        for (int i = multiplicadorMin; i <= multiplicadorMax; i++) {
+            int resultado = multiplicando * i;
+            resultados.add(resultado);
         }
-        System.out.println(resultado);
-        return resultado;
+
+
+        return resultados;
     }
 }
-
-    //public int calcular(int multiplicando,int multiplicadorMin,int multiplicadorMax){
-    //int resultado = 0;
-    //for (int i =multiplicadorMin;i <= multiplicadorMax;i++){
-        //resultado = multiplicando * i;
-    //}
-    //System.out.println(resultado);
-    //return resultado;
