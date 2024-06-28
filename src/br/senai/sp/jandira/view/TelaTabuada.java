@@ -1,8 +1,6 @@
 package br.senai.sp.jandira.view;
 
-
 import br.senai.sp.jandira.model.CalculoTabuada;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-
-public class TelaTabuada {
+public class TelaTabuada extends JFrame {
     private JPanel painelBackground = new JPanel();
     private JLabel labelTitulo = new JLabel("Tabuada");
     private JPanel painelTitulo = new JPanel();
@@ -27,12 +24,12 @@ public class TelaTabuada {
     private JTextArea areaResultado = new JTextArea();
     private CalculoTabuada calculoTabuada = new CalculoTabuada();
 
+    private JList<String> listTabuada;
+    private DefaultListModel<String> listModelo;
+
     int multiplicando = 0;
     int multiplicadorMin = 0;
     int multiplicadorMax = 0;
-
-    List resultadosList;
-
 
     public TelaTabuada() {
         criarTela();
@@ -43,7 +40,6 @@ public class TelaTabuada {
         tela.setSize(500, 380);
         tela.setTitle("Tabuada");
         tela.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        tela.setLayout(null);
 
         painelBackground.setBounds(0, 50, 500, 310);
         painelBackground.setBackground(new Color(149, 213, 178));
@@ -96,11 +92,17 @@ public class TelaTabuada {
         lblResultado.setFont(new Font("Arial", Font.BOLD, 20));
         lblResultado.setBounds(300, 55, 140, 30);
 
-        areaResultado.setBounds(270, 80, 160, 240);
         areaResultado.setFont(new Font("Arial", Font.BOLD, 18));
         areaResultado.setForeground(new Color(124, 255, 0));
         areaResultado.setEditable(false);
         areaResultado.setLineWrap(true);
+
+        listModelo = new DefaultListModel<>();
+        listTabuada = new JList<>(listModelo);
+
+        JScrollPane scrollpane = new JScrollPane(listTabuada);
+        scrollpane.setBounds(270, 80, 160, 240);
+        scrollpane.setFont(new Font("Arial", Font.PLAIN, 14));
 
         btnLimpar.addActionListener(new ActionListener() {
             @Override
@@ -109,7 +111,6 @@ public class TelaTabuada {
 
             }
         });
-
 
         btnCalcular.addActionListener(new ActionListener() {
             @Override
@@ -130,6 +131,7 @@ public class TelaTabuada {
         tela.getContentPane().add(btnCalcular);
         tela.getContentPane().add(lblResultado);
         tela.getContentPane().add(areaResultado);
+        tela.getContentPane().add(scrollpane);
 
         tela.getContentPane().add(painelBackground);
 
@@ -138,53 +140,31 @@ public class TelaTabuada {
     }
 
     private void apertarLimpar() {
+
         campoMultiplicando.setText("");
         campoMultiplicadorMin.setText("");
         campoMultiplicadorMax.setText("");
         areaResultado.setText("");
         JOptionPane.showMessageDialog(null, "Apagado!");
     }
-
     private void apertarCalcular() {
+        try {
+            int multiplicando = Integer.parseInt(campoMultiplicando.getText());
+            int multiplicadorMin = Integer.parseInt(campoMultiplicadorMin.getText());
+            int multiplicadorMax = Integer.parseInt(campoMultiplicadorMax.getText());
 
-        int multiplicando = Integer.parseInt(campoMultiplicando.getText());
-        int multiplicadorMin = Integer.parseInt(campoMultiplicadorMin.getText());
-        int multiplicadorMax = Integer.parseInt(campoMultiplicadorMax.getText());
-
-        if (validarDados()){
+            calculoTabuada.setMultiplicando(multiplicando);
             calculoTabuada.setMultiplicadorMin(multiplicadorMin);
             calculoTabuada.setMultiplicadorMax(multiplicadorMax);
 
+            List<String> resultados = calculoTabuada.calcularTabuada();
+
+            for (String linha : resultados) {
+                listModelo.addElement(linha);
+            }
+        } catch (NumberFormatException erro) {
+            JOptionPane.showMessageDialog(null, "Insira um valor válido", "Erro de entrada", JOptionPane.ERROR_MESSAGE);
         }
-
-        List<Integer> resultados = calculoTabuada.calcular(multiplicando, multiplicadorMin, multiplicadorMax);
-        StringBuilder resultadosStr = new StringBuilder();  // é utilizado quando essa string será modificada muitas vezes (por exemplo, em loops).
-
-        for (int i = 0; i < resultados.size(); i++) {
-            int multiplicadorAtual = multiplicadorMin + i;
-            resultadosStr.append(multiplicando).append(" x ").append(multiplicadorAtual).append(" = ").append(resultados.get(i)).append("\n");
-        }
-
-        areaResultado.setText(resultadosStr.toString());//  O metodo toString do Stringbuilder é usado para transformar em uma string
-        JOptionPane.showMessageDialog(null, "Resultado gerado!");
     }
-
-    private boolean validarDados(){
-        try{
-            multiplicadorMin = Integer.parseInt(campoMultiplicadorMin.getText().replace(",",".").trim());
-        }catch(NumberFormatException erro){
-            System.out.println(erro);
-            JOptionPane.showMessageDialog(null,"O Multiplicador Mínimo deve ser um valor numérico!","Valor inválido",JOptionPane.ERROR_MESSAGE);
-            System.out.println(erro);
-            return false;
-        }
-        try{
-            multiplicadorMax = Integer.parseInt(campoMultiplicadorMax.getText().replace(",",".").trim());
-        }catch (NumberFormatException erro){
-            System.out.println(erro);
-            JOptionPane.showMessageDialog(null,"O Multiplicador Máximo deve ser um valor numérico!","Valor inválido",JOptionPane.ERROR_MESSAGE);
-        }
-        return true;
-    }
-
 }
+

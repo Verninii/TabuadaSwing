@@ -8,7 +8,6 @@ public class CalculoTabuada {
     private int multiplicando;
     private int multiplicadorMin;
     private int multiplicadorMax;
-    private int resultado;
 
     Scanner scanner = new Scanner(System.in);
 
@@ -36,19 +35,14 @@ public class CalculoTabuada {
         this.multiplicadorMax = multiplicadorMax;
     }
 
-    public int getResultado() {
-        return resultado;
-    }
-    public List<Integer> calcular(int multiplicando, int multiplicadorMin, int multiplicadorMax) {
-        List<Integer> resultados = new ArrayList<>();
-
-
+    public List<String> calcularTabuada() {
+        List<String> linhasTabuada = new ArrayList<>();
         for (int i = multiplicadorMin; i <= multiplicadorMax; i++) {
+
             int resultado = multiplicando * i;
-            resultados.add(resultado);
+            linhasTabuada.add(multiplicando + " x " + i + " = " + resultado);
+
         }
-
-
-        return resultados;
+        return linhasTabuada;
     }
 }
